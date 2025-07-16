@@ -16,7 +16,7 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->role !== UserRoleEnum::ADMIN->value) {
+        if ($request->user()->role !== UserRoleEnum::ADMIN) {
             abort(Response::HTTP_FORBIDDEN, 'Acesso não autorizado.');
         }
 

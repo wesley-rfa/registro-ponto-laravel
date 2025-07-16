@@ -16,7 +16,7 @@ class EnsureUserIsEmployee
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->role !== UserRoleEnum::EMPLOYEE->value) {
+        if ($request->user()->role !== UserRoleEnum::EMPLOYEE) {
             abort(Response::HTTP_FORBIDDEN, 'Acesso não autorizado.');
         }
 
