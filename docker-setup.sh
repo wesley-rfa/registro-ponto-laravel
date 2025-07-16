@@ -45,6 +45,10 @@ docker-compose exec app php artisan config:cache
 echo "🗄️ Executando migrações..."
 docker-compose exec app php artisan migrate || echo "⛔ Erro ao rodar migrations"
 
+# Executar seeders
+echo "🌱 Executando seeders..."
+docker-compose exec app php artisan db:seed || echo "⛔ Erro ao rodar seeders"
+
 # Gerar chave da aplicação
 echo "🔑 Gerando chave da aplicação..."
 docker-compose exec app php artisan key:generate --force
