@@ -10,7 +10,7 @@ class ClockInService
 {
     public function __construct(private ClockInRepositoryInterface $clockInRepository) {}
 
-    public function registerClock(CreateClockInDto $dto): ClockIn
+    public function create(CreateClockInDto $dto): ClockIn
     {
         return $this->clockInRepository->create($dto);
     }
