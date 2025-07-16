@@ -1,0 +1,13 @@
+node_modules
+vendor
+.git
+.gitignore
+README.md
+.env
+.idea
+.vscode
+*.log
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
