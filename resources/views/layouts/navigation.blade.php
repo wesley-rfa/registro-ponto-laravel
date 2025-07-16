@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ Auth::user()->role === \App\Enums\UserRoleEnum::ADMIN ? route('admin.dashboard') : route('employee.index') }}">
+                    <a href="{{ Auth::user()->role === \App\Enums\UserRoleEnum::ADMIN ? route('admin.dashboard') : route('clock-in.index') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -17,7 +17,7 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     @else
-                        <x-nav-link :href="route('employee.index')" :active="request()->routeIs('employee.index')">
+                        <x-nav-link :href="route('clock-in.index')" :active="request()->routeIs('clock-in.index')">
                             {{ __('Registro de Ponto') }}
                         </x-nav-link>
                     @endif
@@ -78,7 +78,7 @@
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
             @else
-                <x-responsive-nav-link :href="route('employee.index')" :active="request()->routeIs('employee.index')">
+                <x-responsive-nav-link :href="route('clock-in.index')" :active="request()->routeIs('clock-in.index')">
                     {{ __('Registro de Ponto') }}
                 </x-responsive-nav-link>
             @endif

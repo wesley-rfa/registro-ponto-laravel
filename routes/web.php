@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 
     Route::middleware('admin')->group(function () {
-        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/users', [UserController::class, 'index'])->name('admin.dashboard');
     });
 
     Route::middleware('employee')->group(function () {

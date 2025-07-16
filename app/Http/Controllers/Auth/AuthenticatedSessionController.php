@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         $redirectRoute = match ($user->role) {
             UserRoleEnum::ADMIN => 'admin.dashboard',
-            UserRoleEnum::EMPLOYEE => 'employee.index',
+            UserRoleEnum::EMPLOYEE => 'clock-in.index',
             default => 'login'
         };
 
