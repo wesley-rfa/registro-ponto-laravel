@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
         Route::get('/registers', [ClockInController::class, 'registers'])->name('admin.registers');
+        Route::get('/users/search-cep', [UserController::class, 'searchCep'])->name('admin.users.search-cep');
     });
 
     Route::middleware('employee')->group(function () {
