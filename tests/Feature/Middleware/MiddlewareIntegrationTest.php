@@ -79,13 +79,15 @@ class MiddlewareIntegrationTest extends TestCase
     {
         $response = $this->get('/admin/test');
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $response->assertRedirect('/login');
     }
 
     public function test_unauthenticated_user_cannot_access_employee_route(): void
     {
         $response = $this->get('/employee/test');
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertStatus(Response::HTTP_FOUND);
+        $response->assertRedirect('/login');
     }
 } 
