@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('admin.dashboard');
+        Route::get('/registers', [ClockInController::class, 'registers'])->name('admin.registers');
     });
 
     Route::middleware('employee')->group(function () {

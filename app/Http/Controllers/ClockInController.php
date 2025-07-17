@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ClockInService;
+use App\Dtos\ClockIn\ListFilterDto;
 use App\Dtos\ClockIn\CreateClockInDto;
 use App\Exceptions\DuplicateClockInException;
 use Illuminate\Support\Facades\Log;
@@ -18,12 +19,18 @@ class ClockInController extends Controller
         return view('employee.index');
     }
 
-    public function store(Request $request)
+    public function registers()
+    {
+        $clockIns = $this->clockInService->findAll(ListFilterDto::create(request()->all()));
+        return view('admin.registers', compact('clockIns'));
+    }
+
+    public function store()
     {
         try {
             $dto = CreateClockInDto::create();
             $this->clockInService->create($dto);
-            
+
             return redirect()->back()->with('success', 'Ponto registrado com sucesso!');
         } catch (DuplicateClockInException $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -33,8 +40,8 @@ class ClockInController extends Controller
                 'error' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
-            ]); 
-            
+            ]);
+
             return redirect()->back()->with('error', 'Erro ao registrar ponto: ' . $e->getMessage());
         }
     }
