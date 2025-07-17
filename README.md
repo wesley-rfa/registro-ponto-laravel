@@ -187,6 +187,16 @@ docker compose exec app php artisan migrate
 docker compose exec app php artisan db:seed
 ```
 
+## 👤 Usuário Administrador Inicial
+
+Ao rodar o script de setup (`./docker-setup.sh`), um seeder é executado automaticamente para criar o primeiro usuário administrador do sistema. Esse usuário é necessário para acessar o painel e cadastrar os demais funcionários, já que o CRUD padrão cobre apenas funcionários.
+
+**Credenciais padrão do admin inicial:**
+- **E-mail:** admin@teste.com
+- **Senha:** 12345678
+
+> Recomenda-se alterar a senha após o primeiro login para garantir a segurança do sistema.
+
 ---
 
 ## 📈 **Histórico de Versionamento**
