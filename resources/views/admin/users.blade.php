@@ -102,7 +102,12 @@
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                     <button class="text-indigo-600 hover:text-indigo-900 mr-3">Editar</button>
-                                                    <button class="text-red-600 hover:text-red-900">Excluir</button>
+                                                    <button 
+                                                        onclick="openDeleteModal({{ $user->id }}, '{{ $user->name }}')" 
+                                                        class="text-red-600 hover:text-red-900"
+                                                    >
+                                                        Excluir
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -129,8 +134,8 @@
     </div>
 
     <!-- Modal de Cadastro -->
-    <div id="createUserModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+    <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center p-4">
+        <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-2xl rounded-lg bg-white max-h-[85vh] overflow-y-auto">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Cadastrar Novo Funcionário</h3>
@@ -330,6 +335,57 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center p-4">
+        <div class="relative mx-auto p-8 border w-11/12 md:w-2/3 lg:w-1/2 xl:w-1/3 shadow-2xl rounded-lg bg-white">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmar Exclusão</h3>
+                
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Tem certeza que deseja excluir o funcionário 
+                        <span class="font-semibold text-gray-900" id="deleteUserName"></span>?
+                    </p>
+                    <p class="text-xs text-red-600 mt-2">
+                        ⚠️ Esta ação não pode ser desfeita.
+                    </p>
+                </div>
+                
+                <form id="deleteUserForm" method="POST" style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" id="deleteUserId" name="user_id" value="">
+                </form>
+                
+                <div class="flex justify-center space-x-3">
+                    <button 
+                        type="button" 
+                        onclick="closeDeleteModal()"
+                        class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 font-medium text-sm"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="confirmDelete()"
+                        class="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium text-sm flex items-center"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openCreateModal() {
             document.getElementById('createUserModal').classList.remove('hidden');
@@ -452,5 +508,33 @@
                 closeCreateModal();
             }
         });
+
+        document.getElementById('deleteConfirmationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+
+        function openDeleteModal(userId, userName) {
+            document.getElementById('deleteUserName').textContent = userName;
+            document.getElementById('deleteUserId').value = userId;
+            
+            document.getElementById('deleteConfirmationModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteConfirmationModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('deleteUserName').textContent = '';
+            document.getElementById('deleteUserId').value = '';
+        }
+
+        function confirmDelete() {
+            const userId = document.getElementById('deleteUserId').value;
+            const deleteForm = document.getElementById('deleteUserForm');
+            deleteForm.action = '{{ route("admin.users.destroy") }}';
+            deleteForm.submit();
+        }
     </script>
 </x-app-layout> 

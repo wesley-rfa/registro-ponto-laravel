@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchCepRequest;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\CepResource;
 use App\Http\Resources\ErrorResource;
 use App\Dtos\User\CreateUserDto;
+use App\Dtos\User\DeleteUserDto;
 use App\Services\External\Cep\CepService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -38,6 +41,29 @@ class UserController extends Controller
             return redirect()->route('admin.users')
                 ->withInput()
                 ->with('error', 'Erro ao cadastrar funcionário. Tente novamente.');
+        }
+    }
+
+    public function destroy(DeleteUserRequest $request): RedirectResponse
+    {
+        try {
+            $userId = $request->input('user_id');
+            $user = User::findOrFail($userId);
+            
+            $dto = DeleteUserDto::createFromId($user->id);
+            $deleted = $this->userService->delete($dto);
+
+            if (!$deleted) {
+                return redirect()->route('admin.users')
+                    ->with('error', 'Erro ao excluir usuário. Usuário não encontrado.');
+            }
+
+            return redirect()->route('admin.users')
+                ->with('success', 'Usuário excluído com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Erro interno. Tente novamente.');
         }
     }
 

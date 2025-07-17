@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\UserRoleEnum;
 use App\Dtos\User\CreateUserDto;
+use App\Dtos\User\DeleteUserDto;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -25,5 +26,12 @@ class UserRepository implements UserRepositoryInterface
     public function create(CreateUserDto $dto): User
     {
         return $this->model->create($dto->toArray());
+    }
+
+    public function delete(DeleteUserDto $dto): bool
+    {
+        $user = $this->model->findOrFail($dto->userId);
+
+        return $user->delete();
     }
 }

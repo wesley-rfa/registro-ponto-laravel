@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
         Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+        Route::delete('/users', [UserController::class, 'destroy'])->name('admin.users.destroy');
         Route::get('/registers', [ClockInController::class, 'registers'])->name('admin.registers');
         Route::get('/users/search-cep', [UserController::class, 'searchCep'])->name('admin.users.search-cep');
     });

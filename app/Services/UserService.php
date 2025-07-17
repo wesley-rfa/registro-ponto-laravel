@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Dtos\User\CreateUserDto;
+use App\Dtos\User\DeleteUserDto;
 use App\Models\User;
 
 class UserService
@@ -21,5 +22,10 @@ class UserService
     public function create(CreateUserDto $dto): User
     {
         return $this->userRepository->create($dto);
+    }
+
+    public function delete(DeleteUserDto $dto): bool
+    {
+        return $this->userRepository->delete($dto);
     }
 }   
