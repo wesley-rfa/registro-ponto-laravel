@@ -58,7 +58,7 @@ class ClockInRepository implements ClockInRepositoryInterface
                 FROM clock_ins ci
                 INNER JOIN users employee ON employee.id = ci.user_id
                 INNER JOIN users manager ON manager.id = employee.created_by
-                WHERE employee.deleted_at IS NULL";
+                WHERE 1=1";
 
         if ($dto->startDate) {
             $query .= " AND ci.registered_at >= ?";
