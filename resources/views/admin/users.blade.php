@@ -602,7 +602,7 @@
         function confirmDelete() {
             const userId = document.getElementById('deleteUserId').value;
             const deleteForm = document.getElementById('deleteUserForm');
-            deleteForm.action = '{{ route("admin.users.destroy") }}';
+            deleteForm.action = '{{ route("admin.users.destroy", ":id") }}'.replace(':id', userId);
             deleteForm.submit();
         }
     </script>
