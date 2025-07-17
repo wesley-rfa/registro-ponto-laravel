@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchCepRequest;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\CepResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\ErrorResource;
 use App\Dtos\User\CreateUserDto;
+use App\Dtos\User\UpdateUserDto;
 use App\Dtos\User\DeleteUserDto;
+use App\Dtos\User\FindUserDto;
 use App\Services\External\Cep\CepService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -41,6 +45,38 @@ class UserController extends Controller
             return redirect()->route('admin.users')
                 ->withInput()
                 ->with('error', 'Erro ao cadastrar funcionário. Tente novamente.');
+        }
+    }
+
+    public function show(User $user): JsonResponse
+    {
+        try {
+            $dto = FindUserDto::createFromId($user->id);
+            $user = $this->userService->findById($dto);
+
+            if (!$user) {
+                $errorResource = new ErrorResource('Usuário não encontrado', Response::HTTP_NOT_FOUND);
+                return response()->json($errorResource, $errorResource->getStatusCode());
+            }
+
+            return response()->json(new UserResource($user));
+        } catch (\Exception $e) {
+            $errorResource = new ErrorResource('Erro interno do servidor', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json($errorResource, $errorResource->getStatusCode());
+        }
+    }
+
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        try {
+            $this->userService->update($user, UpdateUserDto::createFromRequest($request));
+
+            return redirect()->route('admin.users')
+                ->with('success', 'Usuário atualizado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users')
+                ->withInput()
+                ->with('error', 'Erro ao atualizar usuário. Tente novamente.');
         }
     }
 

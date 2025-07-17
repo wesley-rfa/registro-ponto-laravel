@@ -101,7 +101,12 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">Editar</button>
+                                                    <button 
+                                                        onclick="openEditModal({{ $user->id }})" 
+                                                        class="text-indigo-600 hover:text-indigo-900 mr-3"
+                                                    >
+                                                        Editar
+                                                    </button>
                                                     <button 
                                                         onclick="openDeleteModal({{ $user->id }}, '{{ $user->name }}')" 
                                                         class="text-red-600 hover:text-red-900"
@@ -133,12 +138,12 @@
         </div>
     </div>
 
-    <!-- Modal de Cadastro -->
+    <!-- Modal de Cadastro/Edição -->
     <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center p-4">
         <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-2xl rounded-lg bg-white max-h-[85vh] overflow-y-auto">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Cadastrar Novo Funcionário</h3>
+                    <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Cadastrar Novo Funcionário</h3>
                     <button onclick="closeCreateModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-xl"></i>
                     </button>
@@ -146,6 +151,8 @@
                 
                 <form id="createUserForm" method="POST" action="{{ route('admin.users.store') }}">
                     @csrf
+                    <input type="hidden" id="editUserId" name="user_id" value="">
+                    <input type="hidden" id="methodField" name="_method" value="POST">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="md:col-span-2">
@@ -278,15 +285,14 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div id="passwordFields">
                             <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                                Senha *
+                                Senha <span id="passwordRequired">*</span>
                             </label>
                             <input 
                                 type="password" 
                                 id="password" 
                                 name="password" 
-                                required
                                 minlength="8"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
                                 placeholder="Mínimo 8 caracteres"
@@ -296,15 +302,14 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div id="passwordConfirmationFields">
                             <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">
-                                Confirmar Senha *
+                                Confirmar Senha <span id="passwordConfirmationRequired">*</span>
                             </label>
                             <input 
                                 type="password" 
                                 id="password_confirmation" 
                                 name="password_confirmation" 
-                                required
                                 minlength="8"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror"
                                 placeholder="Confirme a senha"
@@ -326,6 +331,7 @@
                         <button 
                             type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+                            id="submitButton"
                         >
                             Cadastrar Funcionário
                         </button>
@@ -390,6 +396,64 @@
         function openCreateModal() {
             document.getElementById('createUserModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            document.getElementById('modalTitle').textContent = 'Cadastrar Novo Funcionário';
+            document.getElementById('passwordFields').style.display = 'block';
+            document.getElementById('passwordConfirmationFields').style.display = 'block';
+            document.getElementById('passwordRequired').textContent = '*';
+            document.getElementById('passwordConfirmationRequired').textContent = '*';
+            document.getElementById('submitButton').textContent = 'Cadastrar Funcionário';
+            document.getElementById('createUserForm').action = '{{ route('admin.users.store') }}';
+            document.getElementById('createUserForm').reset();
+            document.getElementById('editUserId').value = '';
+            document.getElementById('methodField').value = 'POST';
+        }
+
+        function openEditModal(userId) {
+            fetch(`{{ route('admin.users.show', ':id') }}`.replace(':id', userId), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados recebidos:', data);
+                    
+                    if (!data.name || !data.email) {
+                        throw new Error('Dados do usuário incompletos');
+                    }
+                    
+                    document.getElementById('createUserModal').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    document.getElementById('modalTitle').textContent = 'Editar Funcionário';
+                    document.getElementById('passwordFields').style.display = 'none';
+                    document.getElementById('passwordConfirmationFields').style.display = 'none';
+                    document.getElementById('passwordRequired').textContent = '';
+                    document.getElementById('passwordConfirmationRequired').textContent = '';
+                    document.getElementById('submitButton').textContent = 'Salvar Alterações';
+                    document.getElementById('createUserForm').action = '{{ route('admin.users.update', ':id') }}'.replace(':id', userId);
+                    document.getElementById('createUserForm').reset();
+                    document.getElementById('editUserId').value = userId;
+                    document.getElementById('methodField').value = 'PUT';
+
+                    document.getElementById('name').value = data.name;
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('cpf').value = data.cpf;
+                    document.getElementById('job_title').value = data.job_title;
+                    document.getElementById('birth_date').value = data.birth_date;
+                    document.getElementById('postal_code').value = data.postal_code;
+                    document.getElementById('address').value = data.address;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar dados do usuário:', error);
+                    console.error('Detalhes do erro:', error.message);
+                    alert('Erro ao carregar dados do usuário. Tente novamente.');
+                });
         }
 
         function closeCreateModal() {
@@ -405,7 +469,12 @@
             if (cep.length === 9) {
                 loadingDiv.classList.remove('hidden');
                 
-                fetch(`/users/search-cep?cep=${cep}`)
+                fetch(`{{ route('admin.users.search-cep') }}?cep=${cep}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                })
                     .then(response => response.json())
                     .then(data => {
                         loadingDiv.classList.add('hidden');
