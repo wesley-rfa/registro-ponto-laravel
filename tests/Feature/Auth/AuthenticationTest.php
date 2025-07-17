@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Http\Response;
 
 class AuthenticationTest extends TestCase
 {
@@ -14,7 +15,7 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get('/login');
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
@@ -44,6 +45,7 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/logout');
