@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DuplicateClockInException extends Exception
 {
-    private int $userId;
+    private ?int $userId;
 
     public function __construct(string $message = 'Já existe um registro de ponto neste momento.', ?int $userId = null)
     {
