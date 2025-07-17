@@ -7,6 +7,7 @@ use App\Services\ClockInService;
 use App\Dtos\ClockIn\ListFilterDto;
 use App\Dtos\ClockIn\CreateClockInDto;
 use App\Exceptions\DuplicateClockInException;
+use App\Http\Requests\ListClockInsRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,9 +20,9 @@ class ClockInController extends Controller
         return view('employee.index');
     }
 
-    public function registers()
+    public function registers(ListClockInsRequest $request)
     {
-        $clockIns = $this->clockInService->findAll(ListFilterDto::create(request()->all()));
+        $clockIns = $this->clockInService->findAll(ListFilterDto::create($request->validated()));
         return view('admin.registers', compact('clockIns'));
     }
 
