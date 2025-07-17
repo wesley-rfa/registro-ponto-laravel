@@ -19,6 +19,9 @@ RUN apt-get update && apt-get install -y \
     npm \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
+# Instalar PCOV para cobertura de testes
+RUN pecl install pcov && docker-php-ext-enable pcov
+
 # Limpar cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
