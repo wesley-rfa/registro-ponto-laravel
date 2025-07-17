@@ -51,7 +51,7 @@
                                     <td class="px-4 py-2">{{ $clockIn['id'] }}</td>
                                     <td class="px-4 py-2">{{ $clockIn['name'] }}</td>
                                     <td class="px-4 py-2">{{ $clockIn['job_title'] }}</td>
-                                    <td class="px-4 py-2">{{ $clockIn['age'] }}</td>
+                                    <td class="px-4 py-2">{{ $clockIn['age'] }} anos</td>
                                     <td class="px-4 py-2">{{ $clockIn['manager_name'] }}</td>
                                     <td class="px-4 py-2">{{ $clockIn['registered_at'] }}</td>
                                 </tr>

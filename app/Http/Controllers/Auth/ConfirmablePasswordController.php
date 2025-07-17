@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Enums\UserRoleEnum;
 
 class ConfirmablePasswordController extends Controller
 {
@@ -35,6 +36,13 @@ class ConfirmablePasswordController extends Controller
 
         $request->session()->put('auth.password_confirmed_at', time());
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+        $redirectRoute = match ($user->role) {
+            UserRoleEnum::ADMIN => 'admin.users',
+            UserRoleEnum::EMPLOYEE => 'clock-in.index',
+            default => 'login'
+        };
+
+        return redirect()->intended(route($redirectRoute, absolute: false));
     }
 }

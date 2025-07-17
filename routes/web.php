@@ -10,7 +10,7 @@ use App\Enums\UserRoleEnum;
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->role === UserRoleEnum::ADMIN) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.users');
         }
         return redirect()->route('clock-in.index');
     }
@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 
     Route::middleware('admin')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('admin.dashboard');
+        Route::get('/users', [UserController::class, 'index'])->name('admin.users');
         Route::get('/registers', [ClockInController::class, 'registers'])->name('admin.registers');
     });
 
