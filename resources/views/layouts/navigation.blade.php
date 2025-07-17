@@ -16,6 +16,9 @@
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.registers')" :active="request()->routeIs('admin.registers')">
+                            {{ __('Registros de Ponto') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('clock-in.index')" :active="request()->routeIs('clock-in.index')">
                             {{ __('Registro de Ponto') }}
@@ -76,6 +79,9 @@
             @if(Auth::user()->role === \App\Enums\UserRoleEnum::ADMIN)
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.registers')" :active="request()->routeIs('admin.registers')">
+                    {{ __('Registros de Ponto') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('clock-in.index')" :active="request()->routeIs('clock-in.index')">

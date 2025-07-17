@@ -45,6 +45,10 @@ docker-compose exec app php artisan config:cache
 echo "🗄️ Executando migrações..."
 docker-compose exec app php artisan migrate || echo "⛔ Erro ao rodar migrations"
 
+# Publicar o template de paginação customizado
+echo "📄 Publicando template de paginação..."
+docker-compose exec app php artisan vendor:publish --tag=laravel-pagination --force
+
 # Executar seeders
 echo "🌱 Executando seeders..."
 docker-compose exec app php artisan db:seed || echo "⛔ Erro ao rodar seeders"
