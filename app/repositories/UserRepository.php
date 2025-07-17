@@ -35,7 +35,7 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->create($dto->toArray());
     }
 
-    public function update(User $user, UpdateUserDto $dto): User
+    public function update($user, UpdateUserDto $dto): User
     {
         $user->update($dto->toArray());
         return $user->fresh();

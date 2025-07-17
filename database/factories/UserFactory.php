@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'cpf' => fake()->numerify('###.###.###-##'),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'role' => UserRoleEnum::EMPLOYEE,
+            'role' => UserRoleEnum::EMPLOYEE->value,
         ];
     }
 }
