@@ -5,11 +5,18 @@ namespace App\Rules;
 use App\Helpers\CpfHelper;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use Illuminate\Support\Facades\App;
 
 class CpfUniqueRule implements ValidationRule
 {
+    private ?int $ignoreUserId;
+
+    public function __construct(?int $ignoreUserId = null)
+    {
+        $this->ignoreUserId = $ignoreUserId;
+    }
+
     /**
      * Run the validation rule.
      *
@@ -18,9 +25,9 @@ class CpfUniqueRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $cleanCpf = CpfHelper::unformat($value);
-        
-        $exists = User::where('cpf', $cleanCpf)->exists();
-            
+        /** @var UserRepositoryInterface $userRepository */
+        $userRepository = App::make(UserRepositoryInterface::class);
+        $exists = $userRepository->existsByCpf($cleanCpf, $this->ignoreUserId);
         if ($exists) {
             $fail('Este CPF já está em uso.');
         }

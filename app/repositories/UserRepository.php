@@ -47,4 +47,13 @@ class UserRepository implements UserRepositoryInterface
 
         return $user->delete();
     }
+
+    public function existsByCpf(string $cpf, ?int $ignoreUserId = null): bool
+    {
+        $query = $this->model->where('cpf', $cpf);
+        if ($ignoreUserId) {
+            $query->where('id', '!=', $ignoreUserId);
+        }
+        return $query->exists();
+    }
 }

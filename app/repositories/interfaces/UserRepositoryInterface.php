@@ -16,4 +16,5 @@ interface UserRepositoryInterface
     public function create(CreateUserDto $dto): User;
     public function update(User $user, UpdateUserDto $dto): User;
     public function delete(DeleteUserDto $dto): bool;
+    public function existsByCpf(string $cpf, ?int $ignoreUserId = null): bool;
 }
