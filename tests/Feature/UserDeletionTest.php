@@ -21,9 +21,7 @@ class UserDeletionTest extends TestCase
         $employee = User::factory()->create(['role' => UserRoleEnum::EMPLOYEE]);
 
         $response = $this->actingAs($admin)
-            ->delete(route('admin.users.destroy'), [
-                'user_id' => $employee->id
-            ]);
+            ->delete(route('admin.users.destroy', $employee->id));
 
         $response->assertRedirect(route('admin.users'))
             ->assertSessionHas('success', 'Usuário excluído com sucesso!');
@@ -40,9 +38,7 @@ class UserDeletionTest extends TestCase
         $otherEmployee = User::factory()->create(['role' => UserRoleEnum::EMPLOYEE]);
 
         $response = $this->actingAs($employee)
-            ->delete(route('admin.users.destroy'), [
-                'user_id' => $otherEmployee->id
-            ]);
+            ->delete(route('admin.users.destroy', $otherEmployee->id));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
@@ -56,9 +52,7 @@ class UserDeletionTest extends TestCase
         $otherAdmin = User::factory()->create(['role' => UserRoleEnum::ADMIN]);
 
         $response = $this->actingAs($admin)
-            ->delete(route('admin.users.destroy'), [
-                'user_id' => $otherAdmin->id
-            ]);
+            ->delete(route('admin.users.destroy', $otherAdmin->id));
 
         $response->assertSessionHasErrors(['user_id']);
     }
@@ -69,9 +63,7 @@ class UserDeletionTest extends TestCase
         $admin = User::factory()->create(['role' => UserRoleEnum::ADMIN]);
 
         $response = $this->actingAs($admin)
-            ->delete(route('admin.users.destroy'), [
-                'user_id' => 999999
-            ]);
+            ->delete(route('admin.users.destroy', 999999));
 
         $response->assertSessionHasErrors(['user_id']);
     }
@@ -81,22 +73,9 @@ class UserDeletionTest extends TestCase
         /** @var User $employee */
         $employee = User::factory()->create(['role' => UserRoleEnum::EMPLOYEE]);
 
-        $response = $this->delete(route('admin.users.destroy'), [
-            'user_id' => $employee->id
-        ]);
+        $response = $this->delete(route('admin.users.destroy', $employee->id));
 
         $response->assertRedirect('/login');
-    }
-
-    public function test_delete_user_without_user_id_validation()
-    {
-        /** @var User $admin */
-        $admin = User::factory()->create(['role' => UserRoleEnum::ADMIN]);
-
-        $response = $this->actingAs($admin)
-            ->delete(route('admin.users.destroy'), []);
-
-        $response->assertSessionHasErrors(['user_id']);
     }
 
     public function test_delete_user_with_invalid_user_id_type()
@@ -105,10 +84,8 @@ class UserDeletionTest extends TestCase
         $admin = User::factory()->create(['role' => UserRoleEnum::ADMIN]);
 
         $response = $this->actingAs($admin)
-            ->delete(route('admin.users.destroy'), [
-                'user_id' => 'invalid'
-            ]);
+            ->delete(route('admin.users.destroy', 'invalid'));
 
-        $response->assertSessionHasErrors(['user_id']);
+        $response->assertStatus(404);
     }
 } 

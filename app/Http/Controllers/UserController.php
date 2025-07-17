@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SearchCepRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\DeleteUserRequest;
 use App\Http\Resources\CepResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ErrorResource;
@@ -80,12 +79,9 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(DeleteUserRequest $request): RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
         try {
-            $userId = $request->input('user_id');
-            $user = User::findOrFail($userId);
-            
             $dto = DeleteUserDto::createFromId($user->id);
             $deleted = $this->userService->delete($dto);
 
