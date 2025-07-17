@@ -18,6 +18,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use App\Enums\UserRoleEnum;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -82,6 +84,11 @@ class UserController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         try {
+            if ($user->role === UserRoleEnum::ADMIN && $user->id !== Auth::id()) {
+                return redirect()->route('admin.users')
+                    ->with('error', 'Não é possível excluir outro administrador.');
+            }
+
             $dto = DeleteUserDto::createFromId($user->id);
             $deleted = $this->userService->delete($dto);
 

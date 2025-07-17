@@ -54,7 +54,8 @@ class UserDeletionTest extends TestCase
         $response = $this->actingAs($admin)
             ->delete(route('admin.users.destroy', $otherAdmin->id));
 
-        $response->assertSessionHasErrors(['user_id']);
+        $response->assertRedirect(route('admin.users'))
+            ->assertSessionHas('error', 'Não é possível excluir outro administrador.');
     }
 
     public function test_admin_cannot_delete_nonexistent_user()
@@ -65,7 +66,7 @@ class UserDeletionTest extends TestCase
         $response = $this->actingAs($admin)
             ->delete(route('admin.users.destroy', 999999));
 
-        $response->assertSessionHasErrors(['user_id']);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     public function test_unauthenticated_user_cannot_delete_user()
