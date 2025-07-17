@@ -50,7 +50,7 @@ class UserUpdateTest extends TestCase
             ->put(route('admin.users.update', $user), $updateData);
 
         $response->assertRedirect(route('admin.users'));
-        $response->assertSessionHas('success', 'Funcionário atualizado com sucesso!');
+        $response->assertSessionHas('success', 'Usuário atualizado com sucesso!');
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
@@ -90,7 +90,7 @@ class UserUpdateTest extends TestCase
             ->put(route('admin.users.update', $user), $updateData);
 
         $response->assertRedirect(route('admin.users'));
-        $response->assertSessionHas('success', 'Funcionário atualizado com sucesso!');
+        $response->assertSessionHas('success', 'Usuário atualizado com sucesso!');
 
         // Verifica se a senha foi atualizada
         $user->refresh();
@@ -150,7 +150,7 @@ class UserUpdateTest extends TestCase
             ->put(route('admin.users.update', $user), $updateData);
 
         $response->assertRedirect(route('admin.users'));
-        $response->assertSessionHas('success', 'Funcionário atualizado com sucesso!');
+        $response->assertSessionHas('success', 'Usuário atualizado com sucesso!');
     }
 
     public function test_user_service_updates_user_with_sanitized_cpf()
